@@ -21,7 +21,10 @@ package org.apache.flink.api.java.utils;
 import com.google.common.collect.Lists;
 import org.apache.flink.annotation.PublicEvolving;
 import org.apache.flink.api.common.JobExecutionResult;
+
 import org.apache.flink.api.common.functions.BroadcastVariableInitializer;
+import org.apache.flink.api.common.functions.MapPartitionFunction;
+import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.common.functions.RichMapPartitionFunction;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.Utils;
@@ -30,7 +33,11 @@ import org.apache.flink.api.java.functions.SampleInPartition;
 import org.apache.flink.api.java.functions.SampleWithFraction;
 import org.apache.flink.api.java.operators.GroupReduceOperator;
 import org.apache.flink.api.java.operators.MapPartitionOperator;
+import org.apache.flink.api.java.summarize.aggregation.SummaryAggregatorFactory;
+import org.apache.flink.api.java.summarize.aggregation.TupleSummaryAggregator;
+import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.typeutils.TupleTypeInfoBase;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.util.AbstractID;
 import org.apache.flink.util.Collector;
@@ -248,6 +255,50 @@ public final class DataSetUtils {
 		String callLocation = Utils.getCallLocationName();
 		SampleInCoordinator<T> sampleInCoordinator = new SampleInCoordinator<>(withReplacement, numSamples, seed);
 		return new GroupReduceOperator<>(mapPartitionOperator, input.getType(), sampleInCoordinator, callLocation);
+	}
+
+	// --------------------------------------------------------------------------------------------
+	//  Summarize
+	// --------------------------------------------------------------------------------------------
+
+
+	/**
+	 * Summarize a DataSet of Tuples by collecting single pass statistics for all columns
+	 *
+	 * Example usage:
+	 * <pre>
+	 * {@code
+	 * Dataset<Tuple3<Double, String, Boolean>> input = // [...]
+	 * Tuple summary = DataSetUtils.summarize(input)
+	 *
+	 * ((NumericColumnSummary) summary.getField(0)).getStandardDeviation()
+	 * ((StringColumnSummary) summary.getField(1)).getMaxStringLength()
+	 * }
+	 * </pre>
+	 * @return the summary as a Tuple the same width as input rows
+	 */
+	public static <T> Tuple summarize(DataSet<Tuple> input) throws Exception {
+		if( !input.getType().isTupleType()) {
+			throw new IllegalArgumentException("summarize() is only implemented for DataSet's of Tuples");
+		}
+		final TupleTypeInfoBase<?> inType = (TupleTypeInfoBase<?>) input.getType();
+		DataSet<TupleSummaryAggregator> result = input.mapPartition(new MapPartitionFunction<Tuple, TupleSummaryAggregator>() {
+			@Override
+			public void mapPartition(Iterable<Tuple> values, Collector<TupleSummaryAggregator> out) throws Exception {
+				TupleSummaryAggregator aggregator = SummaryAggregatorFactory.create(inType);
+				for (Tuple value: values) {
+					aggregator.aggregate(value);
+				}
+				out.collect(aggregator);
+			}
+		}).returns(TupleSummaryAggregator.class).reduce(new ReduceFunction<TupleSummaryAggregator>() {
+			@Override
+			public TupleSummaryAggregator reduce(TupleSummaryAggregator agg1, TupleSummaryAggregator agg2) throws Exception {
+				agg1.combine(agg2);
+				return agg1;
+			}
+		});
+		return result.collect().get(0).result();
 	}
 
 	// --------------------------------------------------------------------------------------------
