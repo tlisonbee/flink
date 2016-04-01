@@ -76,12 +76,12 @@ public class DoubleSummaryAggregator extends NumericSummaryAggregator<Double> {
 
 		@Override
 		public void aggregate(Double value) {
-			sum.add(value);
+			sum = sum.add(value);
 		}
 
 		@Override
 		public void combine(Aggregator<Double, Double> other) {
-			sum.add(((SumDoubleAggregator)other).sum);
+			sum = sum.add(((SumDoubleAggregator)other).sum);
 		}
 
 		@Override

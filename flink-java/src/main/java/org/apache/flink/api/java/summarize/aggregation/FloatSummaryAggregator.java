@@ -76,12 +76,12 @@ public class FloatSummaryAggregator extends NumericSummaryAggregator<Float> {
 
 		@Override
 		public void aggregate(Float value) {
-			sum.add(value);
+			sum = sum.add(value);
 		}
 
 		@Override
 		public void combine(Aggregator<Float, Float> other) {
-			sum.add(((SumFloatAggregator)other).sum);
+			sum = sum.add(((SumFloatAggregator)other).sum);
 		}
 
 		@Override

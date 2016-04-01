@@ -50,7 +50,8 @@ public class ObjectColumnSummary extends ColumnSummary {
 	@Override
 	public String toString() {
 		return "ObjectColumnSummary{" +
-			"notNullCount=" + notNullCount +
+			"totalCount=" + getTotalCount() +
+			", notNullCount=" + notNullCount +
 			", nullCount=" + nullCount +
 			'}';
 	}

@@ -25,79 +25,78 @@ import org.junit.Test;
 import java.util.Random;
 
 
-public class IntegerSummaryAggregatorTest {
+public class LongSummaryAggregatorTest {
 
 	private static final double EPSILON = 0.000000000001;
 
 	@Test
 	public void testIsNan() throws Exception {
-		IntegerSummaryAggregator ag = new IntegerSummaryAggregator();
-		// always false for Integer
-		Assert.assertFalse(ag.isNan(-1));
-		Assert.assertFalse(ag.isNan(0));
-		Assert.assertFalse(ag.isNan(23));
-		Assert.assertFalse(ag.isNan(Integer.MAX_VALUE));
-		Assert.assertFalse(ag.isNan(Integer.MIN_VALUE));
+		LongSummaryAggregator ag = new LongSummaryAggregator();
+		// always false for Long
+		Assert.assertFalse(ag.isNan(-1L));
+		Assert.assertFalse(ag.isNan(0L));
+		Assert.assertFalse(ag.isNan(23L));
+		Assert.assertFalse(ag.isNan(Long.MAX_VALUE));
+		Assert.assertFalse(ag.isNan(Long.MIN_VALUE));
 		Assert.assertFalse(ag.isNan(null));
 	}
 
 	@Test
 	public void testIsInfinite() throws Exception {
-		IntegerSummaryAggregator ag = new IntegerSummaryAggregator();
-		// always false for Integer
-		Assert.assertFalse(ag.isInfinite(-1));
-		Assert.assertFalse(ag.isInfinite(0));
-		Assert.assertFalse(ag.isInfinite(23));
-		Assert.assertFalse(ag.isInfinite(Integer.MAX_VALUE));
-		Assert.assertFalse(ag.isInfinite(Integer.MIN_VALUE));
+		LongSummaryAggregator ag = new LongSummaryAggregator();
+		// always false for Long
+		Assert.assertFalse(ag.isInfinite(-1L));
+		Assert.assertFalse(ag.isInfinite(0L));
+		Assert.assertFalse(ag.isInfinite(23L));
+		Assert.assertFalse(ag.isInfinite(Long.MAX_VALUE));
+		Assert.assertFalse(ag.isInfinite(Long.MIN_VALUE));
 		Assert.assertFalse(ag.isInfinite(null));
 	}
 
 	@Test
 	public void testMean() throws Exception {
-		Assert.assertEquals(50.0, summarize(0, 100).getMean(), 0.0);
-		Assert.assertEquals(33.333333, summarize(0, 0, 100).getMean(), 0.00001);
-		Assert.assertEquals(50.0, summarize(0, 0, 100, 100).getMean(), 0.0);
-		Assert.assertEquals(50.0, summarize(0, 100, null).getMean(), 0.0);
+		Assert.assertEquals(50.0, summarize(0L, 100L).getMean(), 0.0);
+		Assert.assertEquals(33.333333, summarize(0L, 0L, 100L).getMean(), 0.00001);
+		Assert.assertEquals(50.0, summarize(0L, 0L, 100L, 100L).getMean(), 0.0);
+		Assert.assertEquals(50.0, summarize(0L, 100L, null).getMean(), 0.0);
 		Assert.assertNull(summarize().getMean());
 	}
 
 	@Test
 	public void testSum() throws Exception {
-		Assert.assertEquals(100, summarize(0, 100).getSum().intValue());
-		Assert.assertEquals(15, summarize(1, 2, 3, 4, 5).getSum().intValue());
-		Assert.assertEquals(0, summarize(-100, 0, 100, null).getSum().intValue());
-		Assert.assertEquals(90, summarize(-10, 100, null).getSum().intValue());
+		Assert.assertEquals(100L, summarize(0L, 100L).getSum().longValue());
+		Assert.assertEquals(15L, summarize(1L, 2L, 3L, 4L, 5L).getSum().longValue());
+		Assert.assertEquals(0L, summarize(-100L, 0L, 100L, null).getSum().longValue());
+		Assert.assertEquals(90L, summarize(-10L, 100L, null).getSum().longValue());
 		Assert.assertNull(summarize().getSum());
 	}
 
 	@Test
 	public void testMax() throws Exception {
-		Assert.assertEquals(1001, summarize(-1000, 0, 1, 50, 999, 1001).getMax().intValue());
-		Assert.assertEquals(0, summarize(Integer.MIN_VALUE, -1000, 0).getMax().intValue());
-		Assert.assertEquals(11, summarize(1, 8, 7, 6, 9, 10, 2, 3, 5, 0, 11, -2, 3).getMax().intValue());
-		Assert.assertEquals(11, summarize(1, 8, 7, 6, 9, null, 10, 2, 3, 5, null, 0, 11, -2, 3).getMax().intValue());
+		Assert.assertEquals(1001L, summarize(-1000L, 0L, 1L, 50L, 999L, 1001L).getMax().longValue());
+		Assert.assertEquals(0L, summarize(Long.MIN_VALUE, -1000L, 0L).getMax().longValue());
+		Assert.assertEquals(11L, summarize(1L, 8L, 7L, 6L, 9L, 10L, 2L, 3L, 5L, 0L, 11L, -2L, 3L).getMax().longValue());
+		Assert.assertEquals(11L, summarize(1L, 8L, 7L, 6L, 9L, null, 10L, 2L, 3L, 5L, null, 0L, 11L, -2L, 3L).getMax().longValue());
 		Assert.assertNull(summarize().getMax());
 	}
 
 	@Test
 	public void testMin() throws Exception {
-		Assert.assertEquals(-1000, summarize(-1000, 0, 1, 50, 999, 1001).getMin().intValue());
-		Assert.assertEquals(Integer.MIN_VALUE, summarize(Integer.MIN_VALUE, -1000, 0).getMin().intValue());
-		Assert.assertEquals(-2, summarize(1, 8, 7, 6, 9, 10, 2, 3, 5, 0, 11, -2, 3).getMin().intValue());
-		Assert.assertEquals(-2, summarize(1, 8, 7, 6, 9, null, 10, 2, 3, 5, null, 0, 11, -2, 3).getMin().intValue());
+		Assert.assertEquals(-1000L, summarize(-1000L, 0L, 1L, 50L, 999L, 1001L).getMin().longValue());
+		Assert.assertEquals(Long.MIN_VALUE, summarize(Long.MIN_VALUE, -1000L, 0L).getMin().longValue());
+		Assert.assertEquals(-2L, summarize(1L, 8L, 7L, 6L, 9L, 10L, 2L, 3L, 5L, 0L, 11L, -2L, 3L).getMin().longValue());
+		Assert.assertEquals(-2L, summarize(1L, 8L, 7L, 6L, 9L, null, 10L, 2L, 3L, 5L, null, 0L, 11L, -2L, 3L).getMin().longValue());
 		Assert.assertNull(summarize().getMin());
 	}
 
 	/**
 	 * Helper method for summarizing a list of values
 	 */
-	private static NumericColumnSummary<Integer> summarize(Integer... values) {
-
-		return new AggregateCombineHarness<Integer,NumericColumnSummary<Integer>,IntegerSummaryAggregator>() {
+	private static NumericColumnSummary<Long> summarize(Long... values) {
+		return new AggregateCombineHarness<Long,NumericColumnSummary<Long>,LongSummaryAggregator>() {
 
 			@Override
-			protected void compareResults(NumericColumnSummary<Integer> result1, NumericColumnSummary<Integer> result2) {
+			protected void compareResults(NumericColumnSummary<Long> result1, NumericColumnSummary<Long> result2) {
 
 				Assert.assertEquals(result1.getTotalCount(),result2.getTotalCount());
 				Assert.assertEquals(result1.getNullCount(),result2.getNullCount());
@@ -109,9 +108,9 @@ public class IntegerSummaryAggregatorTest {
 				Assert.assertEquals(result1.containsNull(),result2.containsNull());
 				Assert.assertEquals(result1.containsNonNull(),result2.containsNonNull());
 
-				Assert.assertEquals(result1.getMin().intValue(),result2.getMin().intValue());
-				Assert.assertEquals(result1.getMax().intValue(), result2.getMax().intValue());
-				Assert.assertEquals(result1.getSum().intValue(),result2.getSum().intValue());
+				Assert.assertEquals(result1.getMin().longValue(),result2.getMin().longValue());
+				Assert.assertEquals(result1.getMax().longValue(), result2.getMax().longValue());
+				Assert.assertEquals(result1.getSum().longValue(),result2.getSum().longValue());
 				Assert.assertEquals(result1.getMean().doubleValue(), result2.getMean().doubleValue(), EPSILON);
 				Assert.assertEquals(result1.getVariance().doubleValue(),result2.getVariance().doubleValue(), EPSILON);
 				Assert.assertEquals(result1.getStandardDeviation().doubleValue(),result2.getStandardDeviation().doubleValue(), EPSILON);

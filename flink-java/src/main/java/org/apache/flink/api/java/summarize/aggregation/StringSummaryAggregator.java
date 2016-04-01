@@ -64,10 +64,15 @@ public class StringSummaryAggregator implements Aggregator<String,StringColumnSu
 
 		if (nonNullCount == 0) {
 			nonNullCount = other.nonNullCount;
+			emptyCount = other.emptyCount;
 			meanLength = other.meanLength;
+
 		}
 		else if (other.nonNullCount != 0) {
 			long combinedCount = nonNullCount + other.nonNullCount;
+
+			emptyCount += other.emptyCount;
+
 			double deltaMean = other.meanLength.value() - meanLength.value();
 			meanLength = meanLength.add(deltaMean * other.nonNullCount / combinedCount);
 			nonNullCount = combinedCount;

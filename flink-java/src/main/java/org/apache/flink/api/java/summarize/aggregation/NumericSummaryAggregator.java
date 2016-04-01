@@ -41,7 +41,7 @@ public abstract class NumericSummaryAggregator<T extends Number> implements Aggr
 
 	private static final long serialVersionUID = 1L;
 
-	private long nonMissingCount = 0L; // nonMissingCount of elements that are NOT null, NaN, or Infinite
+	private long nonMissingCount = 0L; // count of elements that are NOT null, NaN, or Infinite
 	private long nullCount = 0L;
 	private long nanCount = 0L;
 	private long infinityCount = 0L;
@@ -52,6 +52,7 @@ public abstract class NumericSummaryAggregator<T extends Number> implements Aggr
 	private Aggregator<T,T> sum = initSum();
 
 	private CompensatedSum mean = ZERO;
+	/** Sum of squares of differences from the current mean (used to calculate variance) */
 	private CompensatedSum m2 = ZERO;
 
 	/**
@@ -94,11 +95,11 @@ public abstract class NumericSummaryAggregator<T extends Number> implements Aggr
 		nanCount += other.nanCount;
 		infinityCount += other.infinityCount;
 
-		min.combine(other.min);
-		max.combine(other.max);
-
 		if (nonMissingCount == 0) {
 			nonMissingCount = other.nonMissingCount;
+
+			min = other.min;
+			max = other.max;
 
 			sum = other.sum;
 			mean = other.mean;
@@ -106,6 +107,9 @@ public abstract class NumericSummaryAggregator<T extends Number> implements Aggr
 		}
 		else if (other.nonMissingCount != 0) {
 			long combinedCount = nonMissingCount + other.nonMissingCount;
+
+			min.combine(other.min);
+			max.combine(other.max);
 
 			sum.combine(other.sum);
 
@@ -136,7 +140,7 @@ public abstract class NumericSummaryAggregator<T extends Number> implements Aggr
 			nonMissingCount == 0 ? null : sum.result(),
 			nonMissingCount == 0 ? null : mean.value(),
 			variance,
-			variance == null? null : Math.sqrt(variance) // standard deviation
+			variance == null ? null : Math.sqrt(variance) // standard deviation
 		);
 	}
 

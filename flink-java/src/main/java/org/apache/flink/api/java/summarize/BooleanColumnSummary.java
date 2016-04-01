@@ -56,18 +56,11 @@ public class BooleanColumnSummary extends ColumnSummary {
 		return nullCount;
 	}
 
-	public boolean allTrue() {
-		return trueCount > 0L && falseCount == 0L;
-	}
-
-	public boolean allFalse() {
-		return falseCount > 0L && trueCount == 0L;
-	}
-
 	@Override
 	public String toString() {
 		return "BooleanColumnSummary{" +
-			"trueCount=" + trueCount +
+			"totalCount=" + getTotalCount() +
+			", trueCount=" + trueCount +
 			", falseCount=" + falseCount +
 			", nullCount=" + nullCount +
 			'}';

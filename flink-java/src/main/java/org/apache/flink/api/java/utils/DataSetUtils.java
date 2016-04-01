@@ -304,7 +304,7 @@ public final class DataSetUtils {
 	 * Tuple summary = DataSetUtils.summarize(input)
 	 *
 	 * ((NumericColumnSummary) summary.getField(0)).getStandardDeviation()
-	 * ((StringColumnSummary) summary.getField(1)).getMaxStringLength()
+	 * ((StringColumnSummary) summary.getField(1)).getMaxLength()
 	 * }
 	 * </pre>
 	 * @return the summary as a Tuple the same width as input rows

@@ -28,17 +28,17 @@ public class StringColumnSummary extends ColumnSummary {
 
 	private long nonNullCount;
 	private long nullCount;
-	private long empytCount;
-	private Integer minStringLength;
-	private Integer maxStringLength;
+	private long emptyCount;
+	private Integer minLength;
+	private Integer maxLength;
 	private Double meanLength;
 
-	public StringColumnSummary(long nonNullCount, long nullCount, long empytCount, Integer minStringLength, Integer maxStringLength, Double meanLength) {
+	public StringColumnSummary(long nonNullCount, long nullCount, long emptyCount, Integer minLength, Integer maxLength, Double meanLength) {
 		this.nonNullCount = nonNullCount;
 		this.nullCount = nullCount;
-		this.empytCount = empytCount;
-		this.minStringLength = minStringLength;
-		this.maxStringLength = maxStringLength;
+		this.emptyCount = emptyCount;
+		this.minLength = minLength;
+		this.maxLength = maxLength;
 		this.meanLength = meanLength;
 	}
 
@@ -52,16 +52,16 @@ public class StringColumnSummary extends ColumnSummary {
 		return nullCount;
 	}
 
-	public long getEmpytCount() {
-		return empytCount;
+	public long getEmptyCount() {
+		return emptyCount;
 	}
 
-	public Integer getMinStringLength() {
-		return minStringLength;
+	public Integer getMinLength() {
+		return minLength;
 	}
 
-	public Integer getMaxStringLength() {
-		return maxStringLength;
+	public Integer getMaxLength() {
+		return maxLength;
 	}
 
 	public Double getMeanLength() {
@@ -74,9 +74,9 @@ public class StringColumnSummary extends ColumnSummary {
 			"totalCount=" + getTotalCount() +
 			", nonNullCount=" + nonNullCount +
 			", nullCount=" + nullCount +
-			", empytCount=" + empytCount +
-			", minStringLength=" + minStringLength +
-			", maxStringLength=" + maxStringLength +
+			", emptyCount=" + emptyCount +
+			", minLength=" + minLength +
+			", maxLength=" + maxLength +
 			", meanLength=" + meanLength +
 			'}';
 	}
