@@ -18,14 +18,18 @@
 
 package org.apache.flink.api.java.table.test;
 
-import org.apache.flink.api.table.ExpressionException;
-import org.apache.flink.api.table.Table;
+
+import org.apache.flink.api.java.tuple.Tuple3;
+import org.apache.flink.test.javaApiOperators.util.CollectionDataSets;
 import org.apache.flink.api.table.Row;
+import org.apache.flink.api.table.Table;
+import org.apache.flink.api.table.codegen.CodeGenException;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.table.TableEnvironment;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.test.util.MultipleProgramsTestBase;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,7 +38,6 @@ import java.util.List;
 
 @RunWith(Parameterized.class)
 public class StringExpressionsITCase extends MultipleProgramsTestBase {
-
 
 	public StringExpressionsITCase(TestExecutionMode mode) {
 		super(mode);
@@ -52,7 +55,7 @@ public class StringExpressionsITCase extends MultipleProgramsTestBase {
 		Table in = tableEnv.fromDataSet(ds, "a, b");
 
 		Table result = in
-				.select("a.substring(0, b)");
+				.select("a.substring(1, b)");
 
 		DataSet<Row> resultSet = tableEnv.toDataSet(result, Row.class);
 		List<Row> results = resultSet.collect();
@@ -66,8 +69,8 @@ public class StringExpressionsITCase extends MultipleProgramsTestBase {
 		TableEnvironment tableEnv = new TableEnvironment();
 
 		DataSet<Tuple2<String, Integer>> ds = env.fromElements(
-				new Tuple2<>("ABCD", 2),
-				new Tuple2<>("ABCD", 1));
+				new Tuple2<>("ABCD", 3),
+				new Tuple2<>("ABCD", 2));
 
 		Table in = tableEnv.fromDataSet(ds, "a, b");
 
@@ -80,7 +83,7 @@ public class StringExpressionsITCase extends MultipleProgramsTestBase {
 		compareResultAsText(results, expected);
 	}
 
-	@Test(expected = ExpressionException.class)
+	@Test(expected = CodeGenException.class)
 	public void testNonWorkingSubstring1() throws Exception {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		TableEnvironment tableEnv = new TableEnvironment();
@@ -92,15 +95,14 @@ public class StringExpressionsITCase extends MultipleProgramsTestBase {
 		Table in = tableEnv.fromDataSet(ds, "a, b");
 
 		Table result = in
-				.select("a.substring(0, b)");
+			// Must fail. Second parameter of substring must be an Integer not a Double.
+			.select("a.substring(0, b)");
 
 		DataSet<Row> resultSet = tableEnv.toDataSet(result, Row.class);
-		List<Row> results = resultSet.collect();
-		String expected = "";
-		compareResultAsText(results, expected);
+		resultSet.collect();
 	}
 
-	@Test(expected = ExpressionException.class)
+	@Test(expected = CodeGenException.class)
 	public void testNonWorkingSubstring2() throws Exception {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		TableEnvironment tableEnv = new TableEnvironment();
@@ -112,11 +114,43 @@ public class StringExpressionsITCase extends MultipleProgramsTestBase {
 		Table in = tableEnv.fromDataSet(ds, "a, b");
 
 		Table result = in
-				.select("a.substring(b, 15)");
+			// Must fail. First parameter of substring must be an Integer not a String.
+			.select("a.substring(b, 15)");
 
 		DataSet<Row> resultSet = tableEnv.toDataSet(result, Row.class);
-		List<Row> results = resultSet.collect();
-		String expected = "";
-		compareResultAsText(results, expected);
+		resultSet.collect();
+	}
+
+	@Test(expected = CodeGenException.class)
+	public void testGeneratedCodeForStringComparison() throws Exception {
+		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+		TableEnvironment tableEnv = new TableEnvironment();
+		DataSet<Tuple3<Integer, Long, String>> tupleDataSet = CollectionDataSets.get3TupleDataSet(env);
+		Table in = tableEnv.fromDataSet(tupleDataSet, "a, b, c");
+		// Must fail because the comparison here is between Integer(column 'a') and (String 'Fred')
+		Table res = in.filter("a = 'Fred'" );
+		DataSet<Row> resultSet = tableEnv.toDataSet(res, Row.class);
+	}
+
+	@Test(expected = CodeGenException.class)
+	public void testGeneratedCodeForIntegerEqualsComparison() throws Exception {
+		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+		TableEnvironment tableEnv = new TableEnvironment();
+		DataSet<Tuple3<Integer, Long, String>> tupleDataSet = CollectionDataSets.get3TupleDataSet(env);
+		Table in = tableEnv.fromDataSet(tupleDataSet, "a, b, c");
+		// Must fail because the comparison here is between String(column 'c') and (Integer 10)
+		Table res = in.filter("c = 10" );
+		DataSet<Row> resultSet = tableEnv.toDataSet(res, Row.class);
+	}
+
+	@Test(expected = CodeGenException.class)
+	public void testGeneratedCodeForIntegerGreaterComparison() throws Exception {
+		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+		TableEnvironment tableEnv = new TableEnvironment();
+		DataSet<Tuple3<Integer, Long, String>> tupleDataSet = CollectionDataSets.get3TupleDataSet(env);
+		Table in = tableEnv.fromDataSet(tupleDataSet, "a, b, c");
+		// Must fail because the comparison here is between String(column 'c') and (Integer 10)
+		Table res = in.filter("c > 10" );
+		DataSet<Row> resultSet = tableEnv.toDataSet(res, Row.class);
 	}
 }
