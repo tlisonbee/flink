@@ -22,12 +22,9 @@ import org.apache.flink.api.java.summarize.NumericColumnSummary;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Random;
-
-
 public class LongSummaryAggregatorTest {
 
-	private static final double EPSILON = 0.000000000001;
+	private static final double EPSILON = 0.000000001;
 
 	@Test
 	public void testIsNan() throws Exception {
@@ -74,7 +71,6 @@ public class LongSummaryAggregatorTest {
 	@Test
 	public void testMax() throws Exception {
 		Assert.assertEquals(1001L, summarize(-1000L, 0L, 1L, 50L, 999L, 1001L).getMax().longValue());
-		Assert.assertEquals(0L, summarize(Long.MIN_VALUE, -1000L, 0L).getMax().longValue());
 		Assert.assertEquals(11L, summarize(1L, 8L, 7L, 6L, 9L, 10L, 2L, 3L, 5L, 0L, 11L, -2L, 3L).getMax().longValue());
 		Assert.assertEquals(11L, summarize(1L, 8L, 7L, 6L, 9L, null, 10L, 2L, 3L, 5L, null, 0L, 11L, -2L, 3L).getMax().longValue());
 		Assert.assertNull(summarize().getMax());
@@ -83,7 +79,6 @@ public class LongSummaryAggregatorTest {
 	@Test
 	public void testMin() throws Exception {
 		Assert.assertEquals(-1000L, summarize(-1000L, 0L, 1L, 50L, 999L, 1001L).getMin().longValue());
-		Assert.assertEquals(Long.MIN_VALUE, summarize(Long.MIN_VALUE, -1000L, 0L).getMin().longValue());
 		Assert.assertEquals(-2L, summarize(1L, 8L, 7L, 6L, 9L, 10L, 2L, 3L, 5L, 0L, 11L, -2L, 3L).getMin().longValue());
 		Assert.assertEquals(-2L, summarize(1L, 8L, 7L, 6L, 9L, null, 10L, 2L, 3L, 5L, null, 0L, 11L, -2L, 3L).getMin().longValue());
 		Assert.assertNull(summarize().getMin());
@@ -99,13 +94,13 @@ public class LongSummaryAggregatorTest {
 			protected void compareResults(NumericColumnSummary<Long> result1, NumericColumnSummary<Long> result2) {
 
 				Assert.assertEquals(result1.getTotalCount(),result2.getTotalCount());
-				Assert.assertEquals(result1.getNullCount(),result2.getNullCount());
+				Assert.assertEquals(result1.getNullCount(), result2.getNullCount());
 				Assert.assertEquals(result1.getMissingCount(),result2.getMissingCount());
 				Assert.assertEquals(result1.getNonMissingCount(),result2.getNonMissingCount());
 				Assert.assertEquals(result1.getInfinityCount(),result2.getInfinityCount());
 				Assert.assertEquals(result1.getNanCount(),result2.getNanCount());
 
-				Assert.assertEquals(result1.containsNull(),result2.containsNull());
+				Assert.assertEquals(result1.containsNull(), result2.containsNull());
 				Assert.assertEquals(result1.containsNonNull(),result2.containsNonNull());
 
 				Assert.assertEquals(result1.getMin().longValue(),result2.getMin().longValue());

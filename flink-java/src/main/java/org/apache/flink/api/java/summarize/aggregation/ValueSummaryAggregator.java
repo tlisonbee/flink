@@ -51,8 +51,9 @@ public abstract class ValueSummaryAggregator<VT extends Value,PT,R, A extends Ag
 	}
 
 	@Override
-	public void combine(Aggregator<VT, R> otherSameType) {
-		ValueSummaryAggregator<VT,PT, R, A> other = (ValueSummaryAggregator<VT,PT,R, A>) otherSameType;
+	@SuppressWarnings("unchecked")
+	public void combine(Aggregator<VT,R> otherSameType) {
+		ValueSummaryAggregator<VT,PT,R,A> other = (ValueSummaryAggregator<VT,PT,R,A>) otherSameType;
 		aggregator.combine(other.aggregator);
 	}
 

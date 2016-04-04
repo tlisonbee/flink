@@ -30,7 +30,9 @@ public class FloatSummaryAggregator extends NumericSummaryAggregator<Float> {
 
 	private static final long serialVersionUID = 1L;
 
-	private class MinFloatAggregator implements Aggregator<Float,Float> {
+	// Nested classes are only "public static" for Kryo serialization, otherwise they'd be private
+
+	public static class MinFloatAggregator implements Aggregator<Float,Float> {
 
 		private float min = Float.MAX_VALUE;
 
@@ -50,7 +52,7 @@ public class FloatSummaryAggregator extends NumericSummaryAggregator<Float> {
 		}
 	}
 
-	private class MaxFloatAggregator implements Aggregator<Float,Float> {
+	public static class MaxFloatAggregator implements Aggregator<Float,Float> {
 
 		private float max = Float.MIN_VALUE;
 
@@ -70,7 +72,7 @@ public class FloatSummaryAggregator extends NumericSummaryAggregator<Float> {
 		}
 	}
 
-	private class SumFloatAggregator implements Aggregator<Float,Float> {
+	public static class SumFloatAggregator implements Aggregator<Float,Float> {
 
 		private CompensatedSum sum = ZERO;
 

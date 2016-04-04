@@ -28,7 +28,9 @@ public class LongSummaryAggregator extends NumericSummaryAggregator<Long> {
 
 	private static final long serialVersionUID = 1L;
 
-	private class MinLongAggregator implements Aggregator<Long,Long> {
+	// Nested classes are only "public static" for Kryo serialization, otherwise they'd be private
+
+	public static class MinLongAggregator implements Aggregator<Long,Long> {
 
 		private long min = Long.MAX_VALUE;
 
@@ -48,7 +50,7 @@ public class LongSummaryAggregator extends NumericSummaryAggregator<Long> {
 		}
 	}
 
-	private class MaxLongAggregator implements Aggregator<Long,Long> {
+	public static class MaxLongAggregator implements Aggregator<Long,Long> {
 
 		private long max = Long.MIN_VALUE;
 
@@ -68,7 +70,7 @@ public class LongSummaryAggregator extends NumericSummaryAggregator<Long> {
 		}
 	}
 
-	private class SumLongAggregator implements Aggregator<Long,Long> {
+	public static class SumLongAggregator implements Aggregator<Long,Long> {
 
 		private long sum = 0;
 

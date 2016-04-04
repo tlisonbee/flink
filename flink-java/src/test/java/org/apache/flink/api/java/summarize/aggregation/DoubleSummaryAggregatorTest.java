@@ -27,7 +27,7 @@ import java.util.Random;
 
 public class DoubleSummaryAggregatorTest {
 
-	private static final double EPSILON = 0.000000000001;
+	private static final double EPSILON = 0.0000000001;
 
 	/**
 	 * Use some values from Anscombe's Quartet for testing.

@@ -22,9 +22,6 @@ import org.apache.flink.api.java.summarize.NumericColumnSummary;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Random;
-
-
 public class IntegerSummaryAggregatorTest {
 
 	private static final double EPSILON = 0.000000000001;

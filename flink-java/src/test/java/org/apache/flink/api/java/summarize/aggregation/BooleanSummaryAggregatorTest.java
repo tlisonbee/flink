@@ -19,7 +19,6 @@
 package org.apache.flink.api.java.summarize.aggregation;
 
 import org.apache.flink.api.java.summarize.BooleanColumnSummary;
-import org.apache.flink.api.java.summarize.StringColumnSummary;
 import org.junit.Assert;
 import org.junit.Test;
 

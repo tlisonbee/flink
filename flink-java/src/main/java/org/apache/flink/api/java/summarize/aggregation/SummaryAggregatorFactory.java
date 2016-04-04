@@ -35,6 +35,7 @@ import org.apache.flink.types.StringValue;
 @Internal
 public class SummaryAggregatorFactory {
 
+	@SuppressWarnings("unchecked")
 	public static <R extends Tuple> TupleSummaryAggregator<R> create(TupleTypeInfoBase<?> inType) {
 		Aggregator[] columnAggregators = new Aggregator[inType.getArity()];
 		for (int field = 0; field < inType.getArity(); field++) {
