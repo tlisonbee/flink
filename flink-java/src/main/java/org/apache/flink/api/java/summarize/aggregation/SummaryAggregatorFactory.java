@@ -19,6 +19,7 @@
 package org.apache.flink.api.java.summarize.aggregation;
 
 import org.apache.flink.annotation.Internal;
+import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.api.java.typeutils.TupleTypeInfoBase;
 import org.apache.flink.types.BooleanValue;
 import org.apache.flink.types.DoubleValue;
@@ -34,13 +35,13 @@ import org.apache.flink.types.StringValue;
 @Internal
 public class SummaryAggregatorFactory {
 
-	public static TupleSummaryAggregator create(TupleTypeInfoBase<?> inType) {
+	public static <R extends Tuple> TupleSummaryAggregator<R> create(TupleTypeInfoBase<?> inType) {
 		Aggregator[] columnAggregators = new Aggregator[inType.getArity()];
 		for (int field = 0; field < inType.getArity(); field++) {
 			Class clazz = inType.getTypeAt(field).getTypeClass();
 			columnAggregators[field] = SummaryAggregatorFactory.create(clazz);
 		}
-		return new TupleSummaryAggregator(columnAggregators);
+		return new TupleSummaryAggregator<>(columnAggregators);
 	}
 
 	@SuppressWarnings("unchecked")

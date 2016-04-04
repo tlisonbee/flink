@@ -25,7 +25,7 @@ import org.apache.flink.api.java.tuple.Tuple;
  * Aggregate tuples using an array of aggregators, one for each "column" or position within the Tuple.
  */
 @Internal
-public class TupleSummaryAggregator implements Aggregator<Tuple,Tuple> {
+public class TupleSummaryAggregator<R extends Tuple> implements Aggregator<Tuple,R> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,7 +46,7 @@ public class TupleSummaryAggregator implements Aggregator<Tuple,Tuple> {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void combine(Aggregator<Tuple, Tuple> other) {
+	public void combine(Aggregator<Tuple, R> other) {
 		TupleSummaryAggregator tupleSummaryAggregator = (TupleSummaryAggregator) other;
 		for( int i = 0; i < columnAggregators.length; i++) {
 			columnAggregators[i].combine(tupleSummaryAggregator.columnAggregators[i]);
@@ -54,10 +54,11 @@ public class TupleSummaryAggregator implements Aggregator<Tuple,Tuple> {
 	}
 
 	@Override
-	public Tuple result() {
+	@SuppressWarnings("unchecked")
+	public R result() {
 		try {
 			Class tupleClass = Tuple.getTupleClass(columnAggregators.length);
-			Tuple tuple = (Tuple) tupleClass.newInstance();
+			R tuple = (R) tupleClass.newInstance();
 			for(int i = 0; i < columnAggregators.length; i++) {
 				tuple.setField(columnAggregators[i].result(), i);
 			}

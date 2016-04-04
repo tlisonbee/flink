@@ -301,31 +301,31 @@ public final class DataSetUtils {
 	 * <pre>
 	 * {@code
 	 * Dataset<Tuple3<Double, String, Boolean>> input = // [...]
-	 * Tuple summary = DataSetUtils.summarize(input)
+	 * Tuple3<NumericColumnSummary,StringColumnSummary, BooleanColumnSummary> summary = DataSetUtils.summarize(input)
 	 *
-	 * ((NumericColumnSummary) summary.getField(0)).getStandardDeviation()
-	 * ((StringColumnSummary) summary.getField(1)).getMaxLength()
+	 * summary.f0.getStandardDeviation()
+	 * summary.f1.getMaxLength()
 	 * }
 	 * </pre>
 	 * @return the summary as a Tuple the same width as input rows
 	 */
-	public static <T> Tuple summarize(DataSet<Tuple> input) throws Exception {
+	public static <R extends Tuple, T extends Tuple> R summarize(DataSet<T> input) throws Exception {
 		if( !input.getType().isTupleType()) {
 			throw new IllegalArgumentException("summarize() is only implemented for DataSet's of Tuples");
 		}
 		final TupleTypeInfoBase<?> inType = (TupleTypeInfoBase<?>) input.getType();
-		DataSet<TupleSummaryAggregator> result = input.mapPartition(new MapPartitionFunction<Tuple, TupleSummaryAggregator>() {
+		DataSet<TupleSummaryAggregator<R>> result = input.mapPartition(new MapPartitionFunction<T, TupleSummaryAggregator<R>>() {
 			@Override
-			public void mapPartition(Iterable<Tuple> values, Collector<TupleSummaryAggregator> out) throws Exception {
-				TupleSummaryAggregator aggregator = SummaryAggregatorFactory.create(inType);
+			public void mapPartition(Iterable<T> values, Collector<TupleSummaryAggregator<R>> out) throws Exception {
+				TupleSummaryAggregator<R> aggregator = SummaryAggregatorFactory.create(inType);
 				for (Tuple value: values) {
 					aggregator.aggregate(value);
 				}
 				out.collect(aggregator);
 			}
-		}).returns(TupleSummaryAggregator.class).reduce(new ReduceFunction<TupleSummaryAggregator>() {
+		}).reduce(new ReduceFunction<TupleSummaryAggregator<R>>() {
 			@Override
-			public TupleSummaryAggregator reduce(TupleSummaryAggregator agg1, TupleSummaryAggregator agg2) throws Exception {
+			public TupleSummaryAggregator<R> reduce(TupleSummaryAggregator<R> agg1, TupleSummaryAggregator<R> agg2) throws Exception {
 				agg1.combine(agg2);
 				return agg1;
 			}

@@ -114,11 +114,11 @@ public class DataSetUtilsITCase extends MultipleProgramsTestBase {
 
 		Collections.shuffle(data);
 
-		DataSet ds = env.fromCollection(data);
-		Tuple results = DataSetUtils.summarize(ds);
+		DataSet<Tuple2<Integer,Double>> ds = env.fromCollection(data);
+		Tuple2<NumericColumnSummary<Integer>,NumericColumnSummary<Double>> results = DataSetUtils.summarize(ds);
 
 		Assert.assertEquals(2, results.getArity());
-		NumericColumnSummary<Integer> col0Summary = results.getField(0);
+		NumericColumnSummary<Integer> col0Summary = results.f0;
 		Assert.assertEquals(8, col0Summary.getNonMissingCount());
 		Assert.assertEquals(1, col0Summary.getMin().intValue());
 		Assert.assertEquals(10, col0Summary.getMax().intValue());
@@ -126,7 +126,7 @@ public class DataSetUtilsITCase extends MultipleProgramsTestBase {
 		Assert.assertEquals(9.1249999999999998, col0Summary.getVariance().doubleValue(), 0.00000000001);
 		Assert.assertEquals(3.0207614933986426, col0Summary.getStandardDeviation().doubleValue(), 0.0000000000001);
 
-		NumericColumnSummary<Double> col1Summary = results.getField(1);
+		NumericColumnSummary<Double> col1Summary = results.f1;
 		Assert.assertEquals(8, col1Summary.getNonMissingCount());
 		Assert.assertEquals(0.0000000000023, col1Summary.getMin().doubleValue(), 0.0);
 		Assert.assertEquals(9000.00000000000006, col1Summary.getMax().doubleValue(), 0.000000000001);
