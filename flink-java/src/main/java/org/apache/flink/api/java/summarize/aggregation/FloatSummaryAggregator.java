@@ -88,7 +88,7 @@ public class FloatSummaryAggregator extends NumericSummaryAggregator<Float> {
 
 		@Override
 		public Float result() {
-			// TODO: is there a better way to handle overflow?
+			// overflow will go to infinity
 			return new Double(sum.value()).floatValue();
 		}
 	}
