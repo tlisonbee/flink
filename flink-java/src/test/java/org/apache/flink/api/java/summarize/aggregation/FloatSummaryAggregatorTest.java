@@ -25,8 +25,6 @@ import org.junit.Test;
 
 public class FloatSummaryAggregatorTest {
 
-	private static final double EPSILON = 0.000000000001;
-
 	/**
 	 * Use some values from Anscombe's Quartet for testing.
 	 *
@@ -46,12 +44,12 @@ public class FloatSummaryAggregatorTest {
 		Assert.assertEquals(9.0, q1.getMean().doubleValue(), 0.0f);
 		Assert.assertEquals(9.0, q4.getMean().doubleValue(), 0.0f);
 
-		Assert.assertEquals(11.0, q1.getVariance().doubleValue(), EPSILON);
-		Assert.assertEquals(11.0, q4.getVariance().doubleValue(), EPSILON);
+		Assert.assertEquals(11.0, q1.getVariance().doubleValue(), 1e-10d);
+		Assert.assertEquals(11.0, q4.getVariance().doubleValue(), 1e-10d);
 
 		double stddev = Math.sqrt(11.0f);
-		Assert.assertEquals(stddev, q1.getStandardDeviation().doubleValue(), EPSILON);
-		Assert.assertEquals(stddev, q4.getStandardDeviation().doubleValue(), EPSILON);
+		Assert.assertEquals(stddev, q1.getStandardDeviation().doubleValue(), 1e-10d);
+		Assert.assertEquals(stddev, q4.getStandardDeviation().doubleValue(), 1e-10d);
 	}
 
 	/**
@@ -149,7 +147,7 @@ public class FloatSummaryAggregatorTest {
 	 * This method breaks the rule of "testing only one thing" by aggregating
 	 * and combining a bunch of different ways.
 	 */
-	private static NumericColumnSummary<Float> summarize(Float... values) {
+	protected NumericColumnSummary<Float> summarize(Float... values) {
 
 		return new AggregateCombineHarness<Float,NumericColumnSummary<Float>,FloatSummaryAggregator>() {
 
@@ -157,9 +155,9 @@ public class FloatSummaryAggregatorTest {
 			protected void compareResults(NumericColumnSummary<Float> result1, NumericColumnSummary<Float> result2) {
 				Assert.assertEquals(result1.getMin(), result2.getMin(), 0.0f);
 				Assert.assertEquals(result1.getMax(), result2.getMax(), 0.0f);
-				Assert.assertEquals(result1.getMean(), result2.getMean(), EPSILON);
-				Assert.assertEquals(result1.getVariance(), result2.getVariance(), EPSILON);
-				Assert.assertEquals(result1.getStandardDeviation(), result2.getStandardDeviation(), EPSILON);
+				Assert.assertEquals(result1.getMean(), result2.getMean(), 1e-12d);
+				Assert.assertEquals(result1.getVariance(), result2.getVariance(), 1e-9d);
+				Assert.assertEquals(result1.getStandardDeviation(), result2.getStandardDeviation(), 1e-12d);
 			}
 
 		}.summarize(values);

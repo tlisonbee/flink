@@ -22,12 +22,7 @@ import org.apache.flink.api.java.summarize.NumericColumnSummary;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Random;
-
-
 public class DoubleSummaryAggregatorTest {
-
-	private static final double EPSILON = 0.0000000001;
 
 	/**
 	 * Use some values from Anscombe's Quartet for testing.
@@ -48,12 +43,12 @@ public class DoubleSummaryAggregatorTest {
 		Assert.assertEquals(9.0, q1.getMean().doubleValue(), 0.0);
 		Assert.assertEquals(9.0, q4.getMean().doubleValue(), 0.0);
 
-		Assert.assertEquals(11.0, q1.getVariance().doubleValue(), EPSILON);
-		Assert.assertEquals(11.0, q4.getVariance().doubleValue(), EPSILON);
+		Assert.assertEquals(11.0, q1.getVariance().doubleValue(), 1e-10d);
+		Assert.assertEquals(11.0, q4.getVariance().doubleValue(), 1e-10d);
 
 		double stddev = Math.sqrt(11.0);
-		Assert.assertEquals(stddev, q1.getStandardDeviation().doubleValue(), EPSILON);
-		Assert.assertEquals(stddev, q4.getStandardDeviation().doubleValue(), EPSILON);
+		Assert.assertEquals(stddev, q1.getStandardDeviation().doubleValue(), 1e-10d);
+		Assert.assertEquals(stddev, q4.getStandardDeviation().doubleValue(), 1e-10d);
 	}
 
 	/**
@@ -170,9 +165,9 @@ public class DoubleSummaryAggregatorTest {
 			protected void compareResults(NumericColumnSummary<Double> result1, NumericColumnSummary<Double> result2) {
 				Assert.assertEquals(result1.getMin(), result2.getMin(), 0.0);
 				Assert.assertEquals(result1.getMax(), result2.getMax(), 0.0);
-				Assert.assertEquals(result1.getMean(), result2.getMean(), EPSILON);
-				Assert.assertEquals(result1.getVariance(), result2.getVariance(), EPSILON);
-				Assert.assertEquals(result1.getStandardDeviation(), result2.getStandardDeviation(), EPSILON);
+				Assert.assertEquals(result1.getMean(), result2.getMean(), 1e-12d);
+				Assert.assertEquals(result1.getVariance(), result2.getVariance(), 1e-9d);
+				Assert.assertEquals(result1.getStandardDeviation(), result2.getStandardDeviation(), 1e-12d);
 			}
 
 		}.summarize(values);

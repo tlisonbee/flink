@@ -47,7 +47,12 @@ public abstract class ValueSummaryAggregator<VT extends Value,PT,R, A extends Ag
 
 	@Override
 	public void aggregate(VT value) {
-		aggregator.aggregate(getValue(value));
+		if (value != null) {
+			aggregator.aggregate(getValue(value));
+		}
+		else {
+			aggregator.aggregate(null);
+		}
 	}
 
 	@Override

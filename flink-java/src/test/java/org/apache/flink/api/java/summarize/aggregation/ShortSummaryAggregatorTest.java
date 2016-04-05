@@ -25,8 +25,6 @@ import org.junit.Test;
 
 public class ShortSummaryAggregatorTest {
 
-	private static final double EPSILON = 0.000000000001;
-
 	@Test
 	public void testIsNan() throws Exception {
 		ShortSummaryAggregator ag = new ShortSummaryAggregator();
@@ -90,7 +88,7 @@ public class ShortSummaryAggregatorTest {
 	/**
 	 * Helper method for summarizing a list of values
 	 */
-	private static NumericColumnSummary<Short> summarize(Integer... values) {
+	protected NumericColumnSummary<Short> summarize(Integer... values) {
 
 		// cast all everything to short here
 		Short[] shortValues = new Short[values.length];
@@ -118,9 +116,9 @@ public class ShortSummaryAggregatorTest {
 				Assert.assertEquals(result1.getMin().shortValue(),result2.getMin().shortValue());
 				Assert.assertEquals(result1.getMax().shortValue(), result2.getMax().shortValue());
 				Assert.assertEquals(result1.getSum().shortValue(),result2.getSum().shortValue());
-				Assert.assertEquals(result1.getMean().doubleValue(), result2.getMean().doubleValue(), EPSILON);
-				Assert.assertEquals(result1.getVariance().doubleValue(),result2.getVariance().doubleValue(), EPSILON);
-				Assert.assertEquals(result1.getStandardDeviation().doubleValue(),result2.getStandardDeviation().doubleValue(), EPSILON);
+				Assert.assertEquals(result1.getMean().doubleValue(), result2.getMean().doubleValue(), 1e-12d);
+				Assert.assertEquals(result1.getVariance().doubleValue(),result2.getVariance().doubleValue(), 1e-9d);
+				Assert.assertEquals(result1.getStandardDeviation().doubleValue(),result2.getStandardDeviation().doubleValue(), 1e-12d);
 			}
 		}.summarize(shortValues);
 	}

@@ -24,8 +24,6 @@ import org.junit.Test;
 
 public class IntegerSummaryAggregatorTest {
 
-	private static final double EPSILON = 0.000000000001;
-
 	@Test
 	public void testIsNan() throws Exception {
 		IntegerSummaryAggregator ag = new IntegerSummaryAggregator();
@@ -89,7 +87,7 @@ public class IntegerSummaryAggregatorTest {
 	/**
 	 * Helper method for summarizing a list of values
 	 */
-	private static NumericColumnSummary<Integer> summarize(Integer... values) {
+	protected NumericColumnSummary<Integer> summarize(Integer... values) {
 
 		return new AggregateCombineHarness<Integer,NumericColumnSummary<Integer>,IntegerSummaryAggregator>() {
 
@@ -109,9 +107,9 @@ public class IntegerSummaryAggregatorTest {
 				Assert.assertEquals(result1.getMin().intValue(),result2.getMin().intValue());
 				Assert.assertEquals(result1.getMax().intValue(), result2.getMax().intValue());
 				Assert.assertEquals(result1.getSum().intValue(),result2.getSum().intValue());
-				Assert.assertEquals(result1.getMean().doubleValue(), result2.getMean().doubleValue(), EPSILON);
-				Assert.assertEquals(result1.getVariance().doubleValue(),result2.getVariance().doubleValue(), EPSILON);
-				Assert.assertEquals(result1.getStandardDeviation().doubleValue(),result2.getStandardDeviation().doubleValue(), EPSILON);
+				Assert.assertEquals(result1.getMean().doubleValue(), result2.getMean().doubleValue(), 1e-12d);
+				Assert.assertEquals(result1.getVariance().doubleValue(),result2.getVariance().doubleValue(), 1e-9d);
+				Assert.assertEquals(result1.getStandardDeviation().doubleValue(),result2.getStandardDeviation().doubleValue(), 1e-12d);
 			}
 		}.summarize(values);
 	}

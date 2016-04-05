@@ -71,7 +71,7 @@ public class BooleanSummaryAggregatorTest {
 	 * This method breaks the rule of "testing only one thing" by aggregating and combining
 	 * a bunch of different ways.
 	 */
-	private static BooleanColumnSummary summarize(Boolean... values) {
+	protected BooleanColumnSummary summarize(Boolean... values) {
 		return new AggregateCombineHarness<Boolean, BooleanColumnSummary, BooleanSummaryAggregator>() {
 			@Override
 			protected void compareResults(BooleanColumnSummary result1, BooleanColumnSummary result2) {
