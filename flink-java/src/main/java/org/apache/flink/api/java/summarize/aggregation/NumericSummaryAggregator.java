@@ -52,7 +52,12 @@ public abstract class NumericSummaryAggregator<T extends Number> implements Aggr
 	private Aggregator<T,T> sum = initSum();
 
 	private CompensatedSum mean = ZERO;
-	/** Sum of squares of differences from the current mean (used to calculate variance) */
+	/**
+	 * Sum of squares of differences from the current mean (used to calculate variance).
+	 *
+	 * The algorithm is described in: "Scalable and Numerically Stable Descriptive Statistics in SystemML",
+	 * Tian et al, International Conference on Data Engineering 2012
+	 */
 	private CompensatedSum m2 = ZERO;
 
 	/**

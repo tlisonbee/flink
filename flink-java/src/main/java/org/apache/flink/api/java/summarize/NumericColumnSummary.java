@@ -21,7 +21,11 @@ package org.apache.flink.api.java.summarize;
 import org.apache.flink.annotation.PublicEvolving;
 
 /**
- * Generic Column Summary for Numeric Types
+ * Generic Column Summary for Numeric Types.
+ *
+ * Uses the Kahan summation algorithm to avoid numeric instability when computing variance.
+ * The algorithm is described in: "Scalable and Numerically Stable Descriptive Statistics in SystemML",
+ * Tian et al, International Conference on Data Engineering 2012.
  *
  * @param <T> the numeric type e.g. Integer, DoubleValue
  */

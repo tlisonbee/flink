@@ -50,6 +50,9 @@ public abstract class ColumnSummary {
 		return getNullCount() > 0L;
 	}
 
+	/**
+	 * True if this column contains any non-null values
+	 */
 	public boolean containsNonNull() {
 		return getNonNullCount() > 0L;
 	}

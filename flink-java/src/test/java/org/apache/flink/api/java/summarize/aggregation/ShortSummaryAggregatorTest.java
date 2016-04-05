@@ -90,7 +90,7 @@ public class ShortSummaryAggregatorTest {
 	 */
 	protected NumericColumnSummary<Short> summarize(Integer... values) {
 
-		// cast all everything to short here
+		// cast everything to short here
 		Short[] shortValues = new Short[values.length];
 		for(int i = 0; i < values.length; i++) {
 			if (values[i] != null) {

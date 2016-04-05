@@ -45,6 +45,11 @@ public class SummaryAggregatorFactory {
 		return new TupleSummaryAggregator<>(columnAggregators);
 	}
 
+	/**
+	 * Create an SummaryAggregator for the supplied type
+	 * @param <T> the type to aggregate
+	 * @param <R> the result type of the aggregation
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T,R> Aggregator<T,R> create(Class<T> type) {
 		if (type == Long.class) {
