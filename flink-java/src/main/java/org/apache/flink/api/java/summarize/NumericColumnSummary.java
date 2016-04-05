@@ -23,11 +23,14 @@ import org.apache.flink.annotation.PublicEvolving;
 /**
  * Generic Column Summary for Numeric Types.
  *
+ * Some values are considered "missing" where "missing" is defined as null, NaN, or Infinity.
+ * These values are ignored in some calculations like mean, variance, and standardDeviation.
+ *
  * Uses the Kahan summation algorithm to avoid numeric instability when computing variance.
  * The algorithm is described in: "Scalable and Numerically Stable Descriptive Statistics in SystemML",
  * Tian et al, International Conference on Data Engineering 2012.
  *
- * @param <T> the numeric type e.g. Integer, DoubleValue
+ * @param <T> the numeric type e.g. Integer, Double
  */
 @PublicEvolving
 public class NumericColumnSummary<T> extends ColumnSummary implements java.io.Serializable {
@@ -69,6 +72,9 @@ public class NumericColumnSummary<T> extends ColumnSummary implements java.io.Se
 		return nullCount + nanCount + infinityCount;
 	}
 
+	/**
+	 * The number of values that are not null, NaN, or Infinity.
+	 */
 	public long getNonMissingCount() {
 		return nonMissingCount;
 	}
@@ -86,10 +92,20 @@ public class NumericColumnSummary<T> extends ColumnSummary implements java.io.Se
 		return nullCount;
 	}
 
+	/**
+	 * Number of values that are NaN.
+	 *
+	 * (always zero for types like Short, Integer, Long)
+	 */
 	public long getNanCount() {
 		return nanCount;
 	}
 
+	/**
+	 * Number of values that are positive or negative infinity.
+	 *
+	 * (always zero for types like Short, Integer, Long)
+	 */
 	public long getInfinityCount() {
 		return infinityCount;
 	}
@@ -106,14 +122,33 @@ public class NumericColumnSummary<T> extends ColumnSummary implements java.io.Se
 		return sum;
 	}
 
+	/**
+	 * Null, NaN, and Infinite values are ignored in this calculation.
+	 *
+	 * @see <a href="https://en.wikipedia.org/wiki/Mean">Arithmetic Mean</a>
+	 */
 	public Double getMean() {
 		return mean;
 	}
 
+	/**
+	 * Variance is a measure of how far a set of numbers are spread out.
+	 *
+	 * Null, NaN, and Infinite values are ignored in this calculation.
+	 *
+	 * @see <a href="https://en.wikipedia.org/wiki/Variance">Variance</a>
+	 */
 	public Double getVariance() {
 		return variance;
 	}
 
+	/**
+	 * Standard Deviation is a measure of variation in a set of numbers.  It is the square root of the variance.
+	 *
+	 * Null, NaN, and Infinite values are ignored in this calculation.
+	 *
+	 * @see <a href="https://en.wikipedia.org/wiki/Standard_deviation">Standard Deviation</a>
+	 */
 	public Double getStandardDeviation() {
 		return standardDeviation;
 	}

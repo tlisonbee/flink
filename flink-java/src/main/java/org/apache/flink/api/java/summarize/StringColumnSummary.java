@@ -52,14 +52,23 @@ public class StringColumnSummary extends ColumnSummary {
 		return nullCount;
 	}
 
+	/**
+	 * Number of empty strings e.g. java.lang.String.isEmpty()
+	 */
 	public long getEmptyCount() {
 		return emptyCount;
 	}
 
+	/**
+	 * Shortest String length
+	 */
 	public Integer getMinLength() {
 		return minLength;
 	}
 
+	/**
+	 * Longest String length
+	 */
 	public Integer getMaxLength() {
 		return maxLength;
 	}
