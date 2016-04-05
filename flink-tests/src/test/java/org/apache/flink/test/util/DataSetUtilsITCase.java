@@ -102,43 +102,6 @@ public class DataSetUtilsITCase extends MultipleProgramsTestBase {
 	public void testSummarize() throws Exception {
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
-		List<Tuple2<Integer, Double>> data = new ArrayList<>();
-		data.add(new Tuple2<>(1, 1.012376));
-		data.add(new Tuple2<>(2, 2.003453));
-		data.add(new Tuple2<>(10, 75.00005));
-		data.add(new Tuple2<>(4, 79.5));
-		data.add(new Tuple2<>(5, 10.0000001));
-		data.add(new Tuple2<>(6, 0.0000000000023));
-		data.add(new Tuple2<>(7, 1000.000000000001));
-		data.add(new Tuple2<>(8, 9000.00000000000006));
-
-		Collections.shuffle(data);
-
-		DataSet<Tuple2<Integer,Double>> ds = env.fromCollection(data);
-		Tuple2<NumericColumnSummary<Integer>,NumericColumnSummary<Double>> results = DataSetUtils.summarize(ds);
-
-		Assert.assertEquals(2, results.getArity());
-		NumericColumnSummary<Integer> col0Summary = results.f0;
-		Assert.assertEquals(8, col0Summary.getNonMissingCount());
-		Assert.assertEquals(1, col0Summary.getMin().intValue());
-		Assert.assertEquals(10, col0Summary.getMax().intValue());
-		Assert.assertEquals(5.375, col0Summary.getMean().doubleValue(), 0.0);
-		Assert.assertEquals(9.1249999999999998, col0Summary.getVariance().doubleValue(), 0.00000000001);
-		Assert.assertEquals(3.0207614933986426, col0Summary.getStandardDeviation().doubleValue(), 0.0000000000001);
-
-		NumericColumnSummary<Double> col1Summary = results.f1;
-		Assert.assertEquals(8, col1Summary.getNonMissingCount());
-		Assert.assertEquals(0.0000000000023, col1Summary.getMin().doubleValue(), 0.0);
-		Assert.assertEquals(9000.00000000000006, col1Summary.getMax().doubleValue(), 0.000000000001);
-		Assert.assertEquals(1270.9394848875002, col1Summary.getMean().doubleValue(), 0.000000000001);
-		Assert.assertEquals(9869964.70032318, col1Summary.getVariance().doubleValue(), 0.00000001);
-		Assert.assertEquals(3141.649996470514, col1Summary.getStandardDeviation().doubleValue(), 0.000000000001);
-	}
-
-	@Test
-	public void testSummarizeManyTypes() throws Exception {
-		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-
 		List<Tuple8<Short, Integer, Long, Float, Double, String, Boolean, DoubleValue>> data = new ArrayList<>();
 		data.add(new Tuple8<>((short)1, 1, 100L, 0.1f, 1.012376, "hello", false, new DoubleValue(50.0)));
 		data.add(new Tuple8<>((short)2, 2, 1000L, 0.2f, 2.003453, "hello", true, new DoubleValue(50.0)));
@@ -153,6 +116,7 @@ public class DataSetUtilsITCase extends MultipleProgramsTestBase {
 
 		DataSet<Tuple8<Short, Integer, Long, Float, Double, String, Boolean, DoubleValue>> ds = env.fromCollection(data);
 
+		// call method under test
 		Tuple results = DataSetUtils.summarize(ds);
 
 		Assert.assertEquals(8, results.getArity());
